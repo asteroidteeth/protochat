@@ -17,11 +17,6 @@ import (
 )
 
 var (
-	configPath        = path.Join(os.Getenv("GOPATH"), "src/github.com/asteroidteeth/protochat/config.ini")
-	config, configErr = globalconf.NewWithOptions(&globalconf.Options{
-		Filename: configPath,
-	})
-
 	username = flag.String("hipchat_username", "", "Hipchat bot username")
 	password = flag.String("hipchat_password", "", "Hipchat bot password")
 	c        *hipchat.Client
@@ -34,32 +29,18 @@ const (
 )
 
 func main() {
+	configPath := path.Join(os.Getenv("GOPATH"), "src/github.com/asteroidteeth/protochat/config.ini")
+	config, configErr := globalconf.NewWithOptions(&globalconf.Options{
+		Filename: configPath,
+	})
+
 	if configErr != nil {
-		fmt.Printf("Error loading config! \"%s\"\n", configErr.Error())
+		log.Fatalf("Error loading config! \"%s\"\n", configErr.Error())
 	}
 	config.Parse()
 	log.Printf("Username is %s", *username)
 	log.Printf("Password is %s", *password)
-	// if appKey == nil {
-	// 	fmt.Println("Hipchat app key not specified...")
-	// 	os.Exit(1)
-	// }
 
-	// xmpp.DefaultConfig = tls.Config{
-	// 	ServerName: "chat.hipchat.com",
-	// 	//InsecureSkipVerify: false,
-	// }
-	// client, err := xmpp.NewClient(host, username, password)
-	// if err != nil {
-	// 	fmt.Printf("Error starting XMPP client: %s\n", err.Error())
-	// 	os.Exit(1)
-	// }
-	// client.Status(xmpp.DoNotDisturb, "Go away, I'm a reclusive bot")
-
-	doTheUnexpected()
-}
-
-func doTheUnexpected() {
 	c, err := hipchat.NewClient(*username, *password, "bot")
 	if err != nil {
 		log.Fatalf("Failed to start hipchat client: %s", err.Error())
@@ -97,7 +78,6 @@ func doTheUnexpected() {
 			}
 		}
 	}
-
 }
 
 func parseFrom(from string) (room, user string) {

@@ -29,6 +29,7 @@ const (
 )
 
 func main() {
+	// Lazy dev config path... for now
 	configPath := path.Join(os.Getenv("GOPATH"), "src/github.com/asteroidteeth/protochat/config.ini")
 	config, configErr := globalconf.NewWithOptions(&globalconf.Options{
 		Filename: configPath,
@@ -68,6 +69,7 @@ func main() {
 			for pattern, handler := range plugin.Plugins {
 				thisDist := levenshtein.DistanceForStrings([]rune(msgData), []rune(pattern), levenshtein.DefaultOptions)
 				if thisDist < levDist {
+					levDist = thisDist
 					bestHandler = handler
 				}
 			}

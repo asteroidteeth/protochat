@@ -10,7 +10,6 @@ import (
 
 	"github.com/daneharrigan/hipchat"
 	"github.com/rakyll/globalconf"
-	"github.com/texttheater/golang-levenshtein/levenshtein"
 
 	_ "github.com/asteroidteeth/protochat/defaultPlugins"
 	"github.com/asteroidteeth/protochat/plugin"
@@ -64,15 +63,7 @@ func main() {
 			mName := mentionName(userFullName)
 			msgData := strings.TrimPrefix(message.Body, "@ProtoBot ")
 
-			var bestHandler plugin.PluginComponent
-			levDist := 9999
-			for pattern, handler := range plugin.Plugins {
-				thisDist := levenshtein.DistanceForStrings([]rune(msgData), []rune(pattern), levenshtein.DefaultOptions)
-				if thisDist < levDist {
-					levDist = thisDist
-					bestHandler = handler
-				}
-			}
+			var bestHandler = plugin.GetHandler(message.Body)
 
 			outgoing := bestHandler.HandleMessage(plugin.IncomingMessage{userFullName, room, mName, message.Body})
 			if outgoing != nil {

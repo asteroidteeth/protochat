@@ -17,3 +17,15 @@ func TestPluginRegistration(t *testing.T) {
 		}
 	}
 }
+
+func TestPluginMatching(t *testing.T) {
+	NewPlugin("asdf", func(msg IncomingMessage) *OutgoingMessage {
+		return &OutgoingMessage{msg.FromRoom, "fdsa"}
+	})
+
+	foundHandler := GetHandler("asdf")
+	generatedMessage := foundHandler.HandleMessage(IncomingMessage{"asdf", "asdf", "asdf", "message body"})
+	if generatedMessage.Message != "fdsa" {
+		t.Error("Incorrect handler returned")
+	}
+}

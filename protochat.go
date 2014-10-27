@@ -12,8 +12,8 @@ import (
 	"github.com/rakyll/globalconf"
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 
+	_ "github.com/asteroidteeth/protochat/defaultPlugins"
 	"github.com/asteroidteeth/protochat/plugin"
-	_ "github.com/asteroidteeth/protochat/plugins"
 )
 
 var (
